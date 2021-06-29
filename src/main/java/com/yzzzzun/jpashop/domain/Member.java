@@ -22,9 +22,17 @@ public class Member {
 	@Column(name = "member_id")
 	private Long id;
 
+	private String name;
+
 	@Embedded
 	private Address address;
 
 	@OneToMany(mappedBy = "member")
 	private List<Order> orders = new ArrayList<>();
+
+	public Member(String name, Address address, List<Order> orders) {
+		this.name = name;
+		this.address = address;
+		this.orders = orders;
+	}
 }

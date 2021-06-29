@@ -9,9 +9,9 @@ Spring boot, JPA를 활용 간단한 쇼핑웹 구현
 
 ## 요구사항
 
-- [ ] 회원 기능
-    - [ ] 회원 가입
-    - [ ] 회원 목록 조회
+- [x] 회원 기능
+    - [x] 회원 가입
+    - [x] 회원 목록 조회
 - [ ] 상품 기능
     - [ ] 상품 등록
     - [ ] 상품 수정
@@ -26,10 +26,39 @@ Spring boot, JPA를 활용 간단한 쇼핑웹 구현
 - [ ] 상품을 카테고리로 구분
 - [ ] 상품 주문시 배송정보 입력 가능
 
+
+- jpa에 집중하기위해 주요 기능에만 집중한다.
+    - 로그인 및 권한관리 안함
+    - 도서만 활용
+    - 카테고리, 배송정보 사용 안함
+
 ## Entity 구성
 
 ![img.png](./images/EntityDiagram.png)
 
-## 핵심 이론 정리
+## Application 아키텍처
 
-//TODO
+### 계층형 구조
+
+- Controller, Web : 웹 계층
+- service : 비즈니스 로직, 트랜잭션 처리
+- repository : JPA를 직접 사용하는 계층
+- domain : 모든 계층 사용
+
+## 이론 정리
+
+- Test와 코드는 별도의 DB를 설정하고 테스트하도록 한다. Test의 경우 메모리 db를 사용해 테스트!
+
+- @Repository, @Service 는 컴포넌트 스캔의 대상이다.
+
+- @PersistenceContext 어노테이션으로 EntityManager를 주입해야 한다.
+
+  - @Autowired를 사용해도 가능하다. 이는 spring boot를 사용하기 때문
+
+- @Transactional의 기본 설정은 readOnly=false로 설정되어 있다.
+
+  - 읽기 전용의 경우 readOnly = true 로 해주면 db리소스를 읽기전용으로 최적화 해준다.
+
+  - 해당 서비스가 읽기 전용이 많은경우, 쓰기가 많은경우를 따져보고 Class 레벨에 Transactional 을 설정한 후, 메서드에 별도의 Transactional을 설정한다.
+
+    > 읽기 전용이 많은 경우 클래스에 @Transactional(readOnly = true) 설정 후 변경과 관련된 메서드에 @Transactional 을 별도로 준다.
