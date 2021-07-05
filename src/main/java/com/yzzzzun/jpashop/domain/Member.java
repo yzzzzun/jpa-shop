@@ -30,6 +30,9 @@ public class Member {
 	@OneToMany(mappedBy = "member")
 	private List<Order> orders = new ArrayList<>();
 
+	protected Member() {
+	}
+
 	public Member(String name, Address address, List<Order> orders) {
 		this.name = name;
 		this.address = address;

@@ -19,7 +19,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.Getter;
+
 @Entity
+@Getter
 @Table(name = "orders")
 public class Order {
 

@@ -34,4 +34,13 @@ public class Delivery {
 	public void changeOrder(Order order) {
 		this.order = order;
 	}
+
+	protected Delivery() {
+	}
+
+	public Delivery(DeliveryStatus status, Order order, Address address) {
+		this.status = status;
+		this.order = order;
+		this.address = address;
+	}
 }
