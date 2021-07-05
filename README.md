@@ -45,7 +45,7 @@ Spring boot, JPA를 활용 간단한 쇼핑웹 구현
 - repository : JPA를 직접 사용하는 계층
 - domain : 모든 계층 사용
 
-## 이론 정리
+## 정리
 
 - Test와 코드는 별도의 DB를 설정하고 테스트하도록 한다. Test의 경우 메모리 db를 사용해 테스트!
 
@@ -62,3 +62,9 @@ Spring boot, JPA를 활용 간단한 쇼핑웹 구현
   - 해당 서비스가 읽기 전용이 많은경우, 쓰기가 많은경우를 따져보고 Class 레벨에 Transactional 을 설정한 후, 메서드에 별도의 Transactional을 설정한다.
 
     > 읽기 전용이 많은 경우 클래스에 @Transactional(readOnly = true) 설정 후 변경과 관련된 메서드에 @Transactional 을 별도로 준다.
+
+- 도메인, 엔티티에 비즈니스 로직을 구현하는걸 도메인 모델 패턴이라고 한다.
+  - 테스트에 장점이 있다 - 단위테스트 작성시 편리함
+  - Service layer는 Stub을 활용해 테스트, 인수테스트를 참고하자.
+- 서비스 레이어에 비즈니스 로직을 구현하는걸 트랜잭션 스크립트 패턴이라 한다.
+- Springboot + Spring Data Jpa + QueryDSL 실무에서 생산성을 극대화 할 수 있다.

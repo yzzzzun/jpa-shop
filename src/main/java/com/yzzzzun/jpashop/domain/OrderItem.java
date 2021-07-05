@@ -30,4 +30,31 @@ public class OrderItem {
 
 	private int orderPrice;
 	private int count;
+
+	protected OrderItem() {
+	}
+
+	public OrderItem(Item item, int orderPrice, int count) {
+		this.item = item;
+		this.orderPrice = orderPrice;
+		this.count = count;
+	}
+
+	public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
+		item.removeStock(count);
+		return new OrderItem(item, orderPrice, count);
+	}
+
+	public void changeOrder(Order order) {
+		this.order = order;
+	}
+
+	//재고 초기화
+	public void cancel() {
+		item.addStock(count);
+	}
+
+	public int getTotalPrice() {
+		return orderPrice * count;
+	}
 }
