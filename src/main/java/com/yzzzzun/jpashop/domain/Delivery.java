@@ -5,9 +5,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import lombok.Getter;
 
@@ -23,6 +25,13 @@ public class Delivery {
 	@Enumerated(value = EnumType.STRING)
 	private DeliveryStatus status;
 
+	@OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
+	private Order order;
+
 	@Embedded
 	private Address address;
+
+	public void changeOrder(Order order) {
+		this.order = order;
+	}
 }
