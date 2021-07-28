@@ -145,3 +145,32 @@ N+1 문제
 
 fetch join 을 사용해서 해결한다. 쿼리 한방으로 데이터를 모두 가져온다.
 
+join결과를 DTO를 바로 반환
+
+```
+return em.createQuery("select o from Order o"
+			+ " join fetch o.member m"
+			+ " join fetch o.delivery d", Order.class).getResultList();
+```
+
+```
+em.createQuery(
+			"select new com.yzzzzun.jpashop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address ) from Order o"
+				+ " join o.member m"
+				+ " join o.delivery d", OrderSimpleQueryDto.class).getResultList();
+```
+
+둘의 차이는 select를 모두하냐, 딱 맞게 조회하냐의 차이가 있다. trade-off가 발생한다.
+
+1번은 재사용성이 높고, 2번은 네트워크 리소스를 적게 먹는다.
+
+2번의경우 화면과 연관성이 깊다. api spec이 변경되면 repository 까지 변경됨.. 
+
+2번 사용시 별도의 패키지를 분리해서 쓰자. Repository 는 순수한 엔티티를 조회하는데 사용
+
+쿼리 방식 선택 권장순서
+
+1. 엔티티를 DTO 로 변환하는 방법을 선택
+2. 필요시 페치조인으로 성능 최적화 -> 대부분 해결가능
+3. 그래도 안되면 DTO로 직접조회하는 방법을 사용한다.
+4. 최후의 방법은 JPA가 제공하는 네이티브 SQL이나 스프링 JDBC Template을 사용해 SQL을 직접 사용
