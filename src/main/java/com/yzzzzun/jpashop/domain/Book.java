@@ -6,6 +6,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import com.yzzzzun.jpashop.controller.BookForm;
+import com.yzzzzun.jpashop.service.dto.UpdateItemDto;
 
 import lombok.Getter;
 
@@ -41,5 +42,11 @@ public class Book extends Item {
 	public static Book createBook(BookForm bookForm) {
 		return new Book(bookForm.getName(), bookForm.getPrice(), bookForm.getStockQuantity(), bookForm.getAuthor(),
 			bookForm.getIsbn());
+	}
+
+	public void updateBookInfo(UpdateItemDto updateItemDto) {
+		updateInfo(updateItemDto);
+		this.author = updateItemDto.getAuthor();
+		this.isbn = updateItemDto.getIsbn();
 	}
 }

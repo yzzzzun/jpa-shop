@@ -68,3 +68,46 @@ Spring boot, JPA를 활용 간단한 쇼핑웹 구현
   - Service layer는 Stub을 활용해 테스트, 인수테스트를 참고하자.
 - 서비스 레이어에 비즈니스 로직을 구현하는걸 트랜잭션 스크립트 패턴이라 한다.
 - Springboot + Spring Data Jpa + QueryDSL 실무에서 생산성을 극대화 할 수 있다.
+
+## 변경감지(DirtyChecking)와 Merge
+
+엔티티를 임의로 만들어내더라도 기존 식별자를 가지고있으면 준영속 엔티티로 볼 수 있다.
+
+준영속 엔티티를 수정하는 방법은 두가지가 있다.
+
+- 변경감지 기능 사용
+- 병합(merge) 사용
+
+준영속 엔티티의 문제는 JPA에서 관리를 하지 않는다는 점이다. 변경이 되어도 변경이 저장되지 않는다..
+
+**변경감지 기능 사용**
+
+JPA에서 BestPractice로 제안하는 방법은 DirtyChecking을 사용하는 방법이다.
+
+```
+Item findItem = itemRepository.findOne(itemId);
+findItem.setPrice(bookParam.getPrice());
+findItem.setName(bookParam.getName());
+findItem.setStockQuantity(bookParam.getStockQuantity());
+```
+
+repository를 통해 찾은 엔티티는 영속상태로 DirtyChecking 대상이다.
+
+**병합(merge) 사용**
+
+```
+entitymanager.merge(entityObject);
+```
+
+merge를 실행하면 준영속 엔티티의 식별자 값으로 1차 캐시에서 엔티티를 조회한다.(없으면 DB에서 조회)
+
+조회한 영속 엔티티에 파라미터로 넘긴 엔티티의 값을 채워 넣는다.
+
+그후 영속상태인 엔티티를 반환해준다.
+
+**주의**
+
+변경감지를 사용하면 원하는 속성만 변경이 가능, 병합은 모든 값을 다 변경한다. 만약 교체값에 null이 있으면 null로 변경이된다.
+
+
+

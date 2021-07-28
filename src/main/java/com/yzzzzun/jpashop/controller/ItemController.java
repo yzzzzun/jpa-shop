@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.yzzzzun.jpashop.domain.Book;
 import com.yzzzzun.jpashop.domain.Item;
 import com.yzzzzun.jpashop.service.ItemService;
+import com.yzzzzun.jpashop.service.dto.UpdateItemDto;
 
 @Controller
 @RequestMapping("/items")
@@ -62,9 +63,8 @@ public class ItemController {
 
 	@PostMapping("/{itemId}/edit")
 	public String update(@PathVariable("itemId") Long itemId, @ModelAttribute("form") BookForm form) {
-		Book book = Book.createBook(form);
-		book.setId(form.getId());
-		itemService.saveItem(book);
+		UpdateItemDto updateItemDto = UpdateItemDto.of(form);
+		itemService.updateItem(itemId, updateItemDto);
 		return "redirect:/items";
 	}
 }
