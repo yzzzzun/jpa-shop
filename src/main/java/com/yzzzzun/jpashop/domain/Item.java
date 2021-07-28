@@ -63,4 +63,8 @@ public abstract class Item {
 		}
 		this.stockQuantity = restQuantity;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }
