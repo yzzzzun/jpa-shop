@@ -38,6 +38,12 @@ public abstract class Item {
 	protected Item() {
 	}
 
+	public Item(String name, int price, int stockQuantity) {
+		this.name = name;
+		this.price = price;
+		this.stockQuantity = stockQuantity;
+	}
+
 	public Item(String name, int price, int stockQuantity,
 		List<Category> categories) {
 		this.name = name;
