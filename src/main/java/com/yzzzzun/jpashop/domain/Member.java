@@ -41,6 +41,10 @@ public class Member {
 		this.orders = orders;
 	}
 
+	public Member(String name) {
+		this.name = name;
+	}
+
 	public Member(String name, Address address) {
 		this.name = name;
 		this.address = address;
@@ -49,5 +53,9 @@ public class Member {
 	public static Member createMember(MemberForm memberForm) {
 		Address address = new Address(memberForm.getCity(), memberForm.getStreet(), memberForm.getZipcode());
 		return new Member(memberForm.getName(), address);
+	}
+
+	public void updateName(String name) {
+		this.name = name;
 	}
 }
