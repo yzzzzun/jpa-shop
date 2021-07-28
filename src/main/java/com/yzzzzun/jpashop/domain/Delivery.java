@@ -43,4 +43,8 @@ public class Delivery {
 		this.order = order;
 		this.address = address;
 	}
+
+	public Delivery(Address address) {
+		this.address = address;
+	}
 }
