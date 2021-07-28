@@ -54,4 +54,8 @@ public class Member {
 		Address address = new Address(memberForm.getCity(), memberForm.getStreet(), memberForm.getZipcode());
 		return new Member(memberForm.getName(), address);
 	}
+
+	public void updateName(String name) {
+		this.name = name;
+	}
 }

@@ -2,7 +2,9 @@ package com.yzzzzun.jpashop.api;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +36,29 @@ public class MemberApiController {
 
 		Long id = memberService.join(member);
 		return new CreateMemberResponse(id);
+	}
+
+	@PutMapping("/api/v2/members/{memberId}")
+	public UpdateMemberResponse updateMember(@PathVariable("memberId") Long memberId,
+		@RequestBody @Valid UpdateMemberRequest request) {
+		memberService.update(memberId, request.getName());
+		Member findMember = memberService.findOne(memberId);
+		return new UpdateMemberResponse(memberId, findMember.getName());
+	}
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	static class UpdateMemberResponse {
+		private Long id;
+		private String name;
+	}
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	static class UpdateMemberRequest {
+		private String name;
 	}
 
 	@Data
