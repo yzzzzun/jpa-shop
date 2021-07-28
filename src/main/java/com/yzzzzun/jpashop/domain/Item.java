@@ -14,6 +14,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 
 import com.yzzzzun.jpashop.exception.NotEnoughStockException;
+import com.yzzzzun.jpashop.service.dto.UpdateItemDto;
 
 import lombok.Getter;
 
@@ -38,6 +39,12 @@ public abstract class Item {
 	protected Item() {
 	}
 
+	public Item(String name, int price, int stockQuantity) {
+		this.name = name;
+		this.price = price;
+		this.stockQuantity = stockQuantity;
+	}
+
 	public Item(String name, int price, int stockQuantity,
 		List<Category> categories) {
 		this.name = name;
@@ -56,5 +63,15 @@ public abstract class Item {
 			throw new NotEnoughStockException("need more stock");
 		}
 		this.stockQuantity = restQuantity;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void updateInfo(UpdateItemDto updateItemDto) {
+		this.price = updateItemDto.getPrice();
+		this.name = updateItemDto.getName();
+		this.stockQuantity = updateItemDto.getStockQuantity();
 	}
 }

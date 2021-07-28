@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yzzzzun.jpashop.domain.Book;
 import com.yzzzzun.jpashop.domain.Item;
 import com.yzzzzun.jpashop.repository.ItemRepository;
+import com.yzzzzun.jpashop.service.dto.UpdateItemDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,18 @@ public class ItemService {
 	@Transactional
 	public void saveItem(Item item) {
 		itemRepository.save(item);
+	}
+
+	@Transactional
+	public void updateItem(Long itemId, UpdateItemDto updateItemDto) {
+		Item item = itemRepository.findOne(itemId);
+
+		if (item instanceof Book) {
+			Book book = (Book)item;
+			book.updateBookInfo(updateItemDto);
+			return;
+		}
+		item.updateInfo(updateItemDto);
 	}
 
 	public List<Item> findItems() {
