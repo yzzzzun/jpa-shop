@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.yzzzzun.jpashop.controller.MemberForm;
+
 import lombok.Getter;
 
 @Getter
@@ -37,5 +39,15 @@ public class Member {
 		this.name = name;
 		this.address = address;
 		this.orders = orders;
+	}
+
+	public Member(String name, Address address) {
+		this.name = name;
+		this.address = address;
+	}
+
+	public static Member createMember(MemberForm memberForm) {
+		Address address = new Address(memberForm.getCity(), memberForm.getStreet(), memberForm.getZipcode());
+		return new Member(memberForm.getName(), address);
 	}
 }
