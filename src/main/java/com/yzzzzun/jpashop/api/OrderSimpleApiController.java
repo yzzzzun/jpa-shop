@@ -1,19 +1,15 @@
 package com.yzzzzun.jpashop.api;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yzzzzun.jpashop.domain.Address;
 import com.yzzzzun.jpashop.domain.Order;
-import com.yzzzzun.jpashop.domain.OrderStatus;
 import com.yzzzzun.jpashop.repository.OrderRepository;
 import com.yzzzzun.jpashop.repository.OrderSearch;
-
-import lombok.Data;
+import com.yzzzzun.jpashop.repository.OrderSimpleQueryDto;
 
 @RestController
 public class OrderSimpleApiController {
@@ -30,33 +26,22 @@ public class OrderSimpleApiController {
 	}
 
 	@GetMapping("/api/v2/simple-orders")
-	public List<SimpleOrderDto> ordersV2() {
+	public List<OrderSimpleQueryDto> ordersV2() {
 		return orderRepository.findAll(new OrderSearch(null, null)).stream()
-			.map(SimpleOrderDto::new)
+			.map(OrderSimpleQueryDto::new)
 			.collect(Collectors.toList());
 	}
 
 	@GetMapping("/api/v3/simple-orders")
-	public List<SimpleOrderDto> ordersV3() {
+	public List<OrderSimpleQueryDto> ordersV3() {
 		return orderRepository.findAllWithMemberDelivery().stream()
-			.map(SimpleOrderDto::new)
+			.map(OrderSimpleQueryDto::new)
 			.collect(Collectors.toList());
 	}
 
-	@Data
-	static class SimpleOrderDto {
-		private Long orderId;
-		private String name;
-		private LocalDateTime orderDate;
-		private OrderStatus orderStatus;
-		private Address address;
-
-		public SimpleOrderDto(Order order) {
-			this.orderId = order.getId();
-			this.name = order.getMember().getName();
-			this.orderDate = order.getOrderDate();
-			this.orderStatus = order.getStatus();
-			this.address = order.getDelivery().getAddress();
-		}
+	@GetMapping("/api/v4/simple-orders")
+	public List<OrderSimpleQueryDto> ordersV4() {
+		return orderRepository.findOrderDtos();
 	}
+
 }
