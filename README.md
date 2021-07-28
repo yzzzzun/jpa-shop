@@ -119,3 +119,58 @@ Entity를 Controller layer에 노출했을 때 문제점
 - 다양한 API를 커버하기 어려워짐. 유지보수성이 낮아짐
 - 컬랙션을 바로반환하면 확장이 어려움
 
+## API개발 고급 - 지연로딩과 조회 성능 최적화
+
+### Entity 직접호출(그냥 테스트.. 절대 사용하지말것)
+
+문제발생 지점 -> 양방향 연관관계의 Json파싱 작업시 무한루프 발생
+
+@JsonIgnore로 양방향을 끊어주면 해결될까? -> 아니다.
+
+LazyLoading 설정되어있는 필드들은 Hibernate에서 Proxy객체를 담아두기때문에 파싱에서 오류가 발생한다.
+
+Hibernate5Module을 사용해서 해결하던가 LazyLoading 걸려있는 필드를 호출하면 되는데 딱봐도 이상하다..
+
+그럼 Eager로 변경..? 불필요한 데이터를 가져와 성능문제가 발생할 수 있다. 또한 성능 튜닝이 어려워진다.
+
+**결론. : DTO 를 사용해서 반환하도록하자. 항상 지연로딩을 설정하고 성능 최적화가 필요하면 fetch join을 사용하자.**
+
+ Ex) Order -> 2건의 Order결과 -> LazyLoading으로 Member, Delivery 접근
+
+1+ Member(N) + Delivery(N) = 5건의 쿼리가 발생한다.
+
+N+1 문제
+
+연관관계 매핑시 발생하는 이슈로 쿼리 한번으로 데이터를 N개 가져왔는데 N개의 연관관계만큼 추가로 쿼리가 발생하는 문제
+
+fetch join 을 사용해서 해결한다. 쿼리 한방으로 데이터를 모두 가져온다.
+
+join결과를 DTO를 바로 반환
+
+```
+return em.createQuery("select o from Order o"
+			+ " join fetch o.member m"
+			+ " join fetch o.delivery d", Order.class).getResultList();
+```
+
+```
+em.createQuery(
+			"select new com.yzzzzun.jpashop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address ) from Order o"
+				+ " join o.member m"
+				+ " join o.delivery d", OrderSimpleQueryDto.class).getResultList();
+```
+
+둘의 차이는 select를 모두하냐, 딱 맞게 조회하냐의 차이가 있다. trade-off가 발생한다.
+
+1번은 재사용성이 높고, 2번은 네트워크 리소스를 적게 먹는다.
+
+2번의경우 화면과 연관성이 깊다. api spec이 변경되면 repository 까지 변경됨.. 
+
+2번 사용시 별도의 패키지를 분리해서 쓰자. Repository 는 순수한 엔티티를 조회하는데 사용
+
+쿼리 방식 선택 권장순서
+
+1. 엔티티를 DTO 로 변환하는 방법을 선택
+2. 필요시 페치조인으로 성능 최적화 -> 대부분 해결가능
+3. 그래도 안되면 DTO로 직접조회하는 방법을 사용한다.
+4. 최후의 방법은 JPA가 제공하는 네이티브 SQL이나 스프링 JDBC Template을 사용해 SQL을 직접 사용

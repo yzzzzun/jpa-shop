@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 
 @Getter
@@ -25,6 +27,7 @@ public class Delivery {
 	@Enumerated(value = EnumType.STRING)
 	private DeliveryStatus status;
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
 	private Order order;
 
@@ -41,6 +44,10 @@ public class Delivery {
 	public Delivery(DeliveryStatus status, Order order, Address address) {
 		this.status = status;
 		this.order = order;
+		this.address = address;
+	}
+
+	public Delivery(Address address) {
 		this.address = address;
 	}
 }

@@ -21,6 +21,10 @@ public class Book extends Item {
 
 	}
 
+	public Book(String name, int price, int stockQuantity) {
+		super(name, price, stockQuantity);
+	}
+
 	public Book(String author, String isbn) {
 		this.author = author;
 		this.isbn = isbn;
