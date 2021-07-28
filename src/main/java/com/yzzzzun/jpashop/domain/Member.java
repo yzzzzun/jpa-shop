@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yzzzzun.jpashop.controller.MemberForm;
 
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class Member {
 	@Embedded
 	private Address address;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "member")
 	private List<Order> orders = new ArrayList<>();
 
