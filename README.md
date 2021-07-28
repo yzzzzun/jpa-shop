@@ -135,5 +135,13 @@ Hibernate5Module을 사용해서 해결하던가 LazyLoading 걸려있는 필드
 
 **결론. : DTO 를 사용해서 반환하도록하자. 항상 지연로딩을 설정하고 성능 최적화가 필요하면 fetch join을 사용하자.**
 
+### 
 
+ Ex) Order -> 2건의 Order결과 -> LazyLoading으로 Member, Delivery 접근
+
+1+ Member(N) + Delivery(N) = 5건의 쿼리가 발생한다.
+
+N+1 문제
+
+연관관계 매핑시 발생하는 이슈로 쿼리 한번으로 데이터를 N개 가져왔는데 N개의 연관관계만큼 추가로 쿼리가 발생하는 문제
 
