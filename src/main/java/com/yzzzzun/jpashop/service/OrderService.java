@@ -1,5 +1,7 @@
 package com.yzzzzun.jpashop.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,7 @@ import com.yzzzzun.jpashop.domain.OrderItem;
 import com.yzzzzun.jpashop.repository.ItemRepository;
 import com.yzzzzun.jpashop.repository.MemberRepository;
 import com.yzzzzun.jpashop.repository.OrderRepository;
+import com.yzzzzun.jpashop.repository.OrderSearch;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,6 +44,10 @@ public class OrderService {
 	public void cancel(Long orderId) {
 		Order order = orderRepository.findOne(orderId);
 		order.cancel();
+	}
+
+	public List<Order> getOrders(OrderSearch orderSearch) {
+		return orderRepository.findAll(orderSearch);
 	}
 
 }
