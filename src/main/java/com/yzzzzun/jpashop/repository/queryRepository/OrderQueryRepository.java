@@ -1,6 +1,8 @@
 package com.yzzzzun.jpashop.repository.queryRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -46,4 +48,29 @@ public class OrderQueryRepository {
 			.getResultList();
 	}
 
+	public List<OrderQueryDto> findAllByDto_Optimization() {
+		List<OrderQueryDto> orders = findOrders();
+		List<Long> orderIds = toOrderIds(orders);
+
+		Map<Long, List<OrderItemQueryDto>> orderItemMap = findOrderItemMap(orderIds);
+		orders.forEach(orderQueryDto -> orderQueryDto.setOrderItems(orderItemMap.get(orderQueryDto.getOrderId())));
+		
+		return orders;
+	}
+
+	private List<Long> toOrderIds(List<OrderQueryDto> orders) {
+		return orders.stream().map(OrderQueryDto::getOrderId).collect(Collectors.toList());
+	}
+
+	private Map<Long, List<OrderItemQueryDto>> findOrderItemMap(List<Long> orderIds) {
+		List<OrderItemQueryDto> orderItems = entityManager.createQuery(
+			"select new com.yzzzzun.jpashop.repository.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count) from OrderItem oi"
+				+ " join oi.item i"
+				+ " where oi.order.id in :orderIds", OrderItemQueryDto.class)
+			.setParameter("orderIds", orderIds).getResultList();
+
+		Map<Long, List<OrderItemQueryDto>> orderItemMap = orderItems.stream()
+			.collect(Collectors.groupingBy(OrderItemQueryDto::getOrderId));
+		return orderItemMap;
+	}
 }
