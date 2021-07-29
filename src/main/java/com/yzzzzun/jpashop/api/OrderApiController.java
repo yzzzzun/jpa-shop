@@ -12,8 +12,10 @@ import com.yzzzzun.jpashop.domain.Address;
 import com.yzzzzun.jpashop.domain.Order;
 import com.yzzzzun.jpashop.domain.OrderItem;
 import com.yzzzzun.jpashop.domain.OrderStatus;
+import com.yzzzzun.jpashop.repository.OrderQueryDto;
 import com.yzzzzun.jpashop.repository.OrderRepository;
 import com.yzzzzun.jpashop.repository.OrderSearch;
+import com.yzzzzun.jpashop.repository.queryRepository.OrderQueryRepository;
 
 import lombok.Data;
 
@@ -21,9 +23,12 @@ import lombok.Data;
 public class OrderApiController {
 
 	private final OrderRepository orderRepository;
+	private final OrderQueryRepository orderQueryRepository;
 
-	public OrderApiController(OrderRepository orderRepository) {
+	public OrderApiController(OrderRepository orderRepository,
+		OrderQueryRepository orderQueryRepository) {
 		this.orderRepository = orderRepository;
+		this.orderQueryRepository = orderQueryRepository;
 	}
 
 	@GetMapping("/api/v1/orders")
@@ -57,6 +62,11 @@ public class OrderApiController {
 		return orderRepository.findAllWithMemberDelivery(offset, limit).stream()
 			.map(OrderDto::new)
 			.collect(Collectors.toList());
+	}
+
+	@GetMapping("/api/v4/orders")
+	public List<OrderQueryDto> ordersV4() {
+		return orderQueryRepository.findOrderQueryDtos();
 	}
 
 	@Data
