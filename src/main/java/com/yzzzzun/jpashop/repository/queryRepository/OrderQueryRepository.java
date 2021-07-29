@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Repository;
 
+import com.yzzzzun.jpashop.repository.OrderFlatDto;
 import com.yzzzzun.jpashop.repository.OrderItemQueryDto;
 import com.yzzzzun.jpashop.repository.OrderQueryDto;
 
@@ -54,7 +55,7 @@ public class OrderQueryRepository {
 
 		Map<Long, List<OrderItemQueryDto>> orderItemMap = findOrderItemMap(orderIds);
 		orders.forEach(orderQueryDto -> orderQueryDto.setOrderItems(orderItemMap.get(orderQueryDto.getOrderId())));
-		
+
 		return orders;
 	}
 
@@ -72,5 +73,15 @@ public class OrderQueryRepository {
 		Map<Long, List<OrderItemQueryDto>> orderItemMap = orderItems.stream()
 			.collect(Collectors.groupingBy(OrderItemQueryDto::getOrderId));
 		return orderItemMap;
+	}
+
+	public List<OrderFlatDto> findAllByDto_flat() {
+		return entityManager.createQuery(
+			"select new com.yzzzzun.jpashop.repository.OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count) from Order o"
+				+ " join o.member m"
+				+ " join o.delivery d"
+				+ " join o.orderItems oi "
+				+ " join oi.item i", OrderFlatDto.class)
+			.getResultList();
 	}
 }
