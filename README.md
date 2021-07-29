@@ -177,4 +177,29 @@ em.createQuery(
 
 ## API 개발 고급 - 컬렉션 조회 최적화
 
+**entity를 노출 -> 절대하지말것**
+
 Entity를 노출하지말라는건 단순히 wrapping을 의미하는게 아니라 Entity에 대한 모든 의존성을 끊어야한다.
+
+**DTO로 반환**
+
+역시 N+1 문제가 발생한다.
+
+**collection fetch join**
+
+fetch join 을 통해 해결하려 했더니 Collection의 경우 일대다 join을 하면서 테이블의 데이터 Collection 만큼 증가(N 을 기준으로 row생성)한다. 중복된 데이터가 나옴
+
+Distinct로 중복을 제거할 수 있다.
+
+DB의 distinct는 로우가 모두 같아야 제거된다. JPA 자체적으로 distinct 가 있으면 order객체의 중복을 제거한다.
+
+Collection fetch join의 단점은 페이징이 불가능하다는 점이다.
+
+> WARN 17855 --- [nio-8080-exec-2] o.h.h.internal.ast.QueryTranslatorImpl   : HHH000104: firstResult/maxResults specified with collection fetch; applying in memory!
+
+페이징을 사용하면 DB쿼리에는 페이지 관련 쿼리가 나가지 않고, 메모리에서 데이터를 처리한다.. -> 장애위험이 크다.
+
+컬렉션 페치조인은 하나만 사용할 수 있다. 두개이상 쓰면 부정합한 데이터가 조회될 수 있다.
+
+
+
